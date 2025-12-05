@@ -19,6 +19,9 @@ export default function Home() {
         <Link href="/register_user" className="get-started">
           Get Started
         </Link>
+              <Link href="/login" className="get-started">
+          Login
+        </Link>
       </nav>
 
       {/* Hero Section */}
