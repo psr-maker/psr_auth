@@ -1,65 +1,104 @@
 "use client";
+
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [status, setStatus] = useState(""); // To track success or error message
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-    setStatus(""); // Reset status before making the request
-
-    // Send registration data to the backend
-    const res = await fetch("/api/register", {
+    const res = await fetch("/api/register_user", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
     const data = await res.json();
-    
-    if (res.ok) {
-      // If registration is successful
-      setStatus({ type: "success", message: data.message });
+
+    if (res.status === 200) {
+      router.push(`/otp?email=${email}`);
     } else {
-      // If registration failed
-      setStatus({ type: "error", message: data.message });
+      setMessage(data.message);
     }
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Register</h1>
-      <form onSubmit={handleSubmit}>
+      <div style={{ 
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh",
+      background: "#f2f2f2"
+    }}>
+
+    
+    <form onSubmit={handleRegister}
+      style={{
+          width: "350px",
+          padding: "20px",
+          borderRadius: "8px",
+          background: "#fff",
+          boxShadow: "0 0 10px rgba(0,0,0,0.1)"
+        }}>
+        
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Register</h2>
+
+       <label>Email</label>
         <input
-          placeholder="Email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+            borderRadius: "5px",
+            border: "1px solid #ccc"
+          }}
         />
-        <br /><br />
 
+            <label>Password</label>
         <input
-          placeholder="Password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+            borderRadius: "5px",
+            border: "1px solid #ccc"
+          }}
         />
-        <br /><br />
 
-        <button type="submit">Register</button>
+        <button 
+          type="submit"
+          style={{
+            width: "100%",
+            padding: "10px",
+            background: "black",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer"
+          }}>
+          Register
+        </button>
+
+        {message && (
+          <p style={{ marginTop: "15px", textAlign: "center" }}>
+            {message}
+          </p>
+        )}
       </form>
-
-      {/* Show success or error message */}
-      {status && (
-        <p style={{ color: status.type === "success" ? "green" : "red" }}>
-          {status.message}
-        </p>
-      )}
     </div>
   );
 }

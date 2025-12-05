@@ -16,7 +16,7 @@ export default function Home() {
         </ul>
 
         {/* Get Started Link */}
-        <Link href="/register" className="get-started">
+        <Link href="/register_user" className="get-started">
           Get Started
         </Link>
       </nav>
