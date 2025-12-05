@@ -37,12 +37,12 @@ export async function POST(req) {
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otp_hash = await bcrypt.hash(otp, 10);
-    const expires_at = new Date(Date.now() + 10 * 60 * 1000);
+    const expires_at = new Date(Date.now() + 1 * 60 * 1000);
 
     // Save OTP
     await db.query(
-      `REPLACE INTO OTP_verification (Email, OTP_hash, Expires_at, Attempts_count)
-       VALUES (?, ?, ?, 0)`,
+      `REPLACE INTO OTP_verification (Email, OTP_hash, Expires_at, Attempts_count,Resend_count)
+       VALUES (?, ?, ?, 0, 0)`,
       [email, otp_hash, expires_at]
     );
 
@@ -59,7 +59,7 @@ export async function POST(req) {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Your OTP Code",
-      text: `Your OTP code is ${otp}. It expires in 10 minutes.`,
+      text: `Your OTP code is ${otp}. It expires in 1 minutes.`,
     });
 
     return Response.json(
